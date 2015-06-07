@@ -1,0 +1,187 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+
+	<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.2.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/pixi.js/3.0.6/pixi.min.js"></script>
+	<script src="pixi.js"></script>
+	</head>
+
+	<body>
+		<script>
+
+		$(document).ready( function() {
+			var gameWidth = window.innerWidth;
+			var gameHeight = window.innerHeight;
+			var bunnyArray = [];
+			var bunny = undefined;
+			var scoreText = undefined;
+			var score = 0;
+			var numHidden = 0;
+			var stageNum = 1;
+			var stageText = undefined;
+			var overText = undefined;
+			var theLine = new PIXI.Graphics();
+			var marchSpeed = 0;
+
+			var stage = new PIXI.Container();
+
+			
+
+			overText = new PIXI.Text("GAME OVER", {font: "bold 60px Podkova", fill: "#FFFFFF", align: "center", stroke: "#FFFFFF", strokeThickness: 6});
+			overText.position.y = gameHeight/2 - 50;
+			overText.position.x = gameWidth/2 - 50;
+			stage.addChild(overText);
+
+			overText.visible = false;
+
+			var renderer = new PIXI.autoDetectRenderer(gameWidth,gameHeight);
+
+			theLine.lineStyle(20, 0xFFFFFF);
+			theLine.moveTo(0,(gameHeight/3)*2 +50);
+			theLine.lineTo(gameWidth, (gameHeight/3)*2 +50);
+
+			scoreText = new PIXI.Text("YOUR SCORE: ", {font: "bold 60px Podkova", fill: "#cc00ff", align: "center", stroke: "#FFFFFF", strokeThickness: 6});
+			scoreText.position.y = 0;
+			scoreText.position.x = 0;
+
+			stageText = new PIXI.Text("Stage 1", {font: "bold 60px Podkova", fill: "#cc00ff", align: "center", stroke: "#FFFFFF", strokeThickness: 6});
+			stageText.position.y = 0;
+			stageText.position.x = gameWidth -300;
+
+			stage.addChild(scoreText);
+			stage.addChild(stageText);
+			stage.addChild(theLine);
+
+
+			document.body.appendChild(renderer.view);
+			renderer.view.style.position = "absolute";
+			renderer.view.style.top = "0px";
+			renderer.view.style.left = "0px";
+	
+
+			setupScene();
+			requestAnimationFrame(animate);
+
+			function setupScene() 
+			{
+
+				bunnyArray = [];
+				stageText.setText("Stage " + stageNum );
+
+				for (var counter = 0; counter < stageNum; ++counter)
+				{
+					var yPosition = 0;
+
+					while (yPosition < 100 || yPosition >  (gameHeight/3 *2))
+					{
+						yPosition = Math.random() * gameHeight;
+					}
+
+				 
+					createTheRabbit(Math.random() * gameWidth,yPosition);
+					stage.addChild(bunny);
+					bunnyArray[counter] = bunny;
+
+				}
+
+				stage.addChild(scoreText);
+				marchSpeed +=0.5;
+				renderer.render(stage);
+				
+			}
+
+
+
+			function createTheRabbit(xPos, yPos)
+			{
+				var texture = new PIXI.Texture.fromImage('bunny.png');
+
+				 bunny = new PIXI.Sprite(texture);
+
+
+				bunny.anchor.x = 0.5;
+				bunny.anchor.y = 0.5;
+				bunny.scale.x = .125;
+				bunny.scale.y = .125;
+
+				bunny.interactive = true;
+				bunny.buttonMode = true;
+				
+
+
+				bunny.mousedown = bunny.touchstart = function (data) 
+				{
+					this.visible = false;
+					console.log("Dead Bunny");
+					score++;
+					scoreText.setText("YOUR SCORE: " + score );
+
+				};
+
+
+				bunny.position.x = xPos;
+				bunny.position.y = yPos;
+
+				
+			}
+				
+
+			function animate() 
+			{
+				requestAnimationFrame(animate);
+			if(overText.visible == false)
+			{
+				marchRabbits();
+
+				if (numHidden == bunnyArray.length)
+				{
+					++stageNum;
+					setupScene();
+				}
+				else
+				{
+					numHidden = 0;
+				}
+
+				if (score <= -50)
+				{
+					stage.alpha = .3;
+					overText.visible = true;
+					overText.alpha = 1
+
+				}
+			}
+				renderer.render(stage);
+
+			}
+
+			function marchRabbits()
+			{
+				
+				for (var counter = 0; counter < bunnyArray.length; ++counter)
+				{
+					bunnyArray[counter].position.y += marchSpeed;
+
+					if ((bunnyArray[counter].position.y > (gameHeight/3)*2 +50) && bunnyArray[counter].visible == true)
+					{
+						score--;
+						scoreText.setText("YOUR SCORE: " + score );
+						bunnyArray[counter].visible = false;
+					}
+
+					if (bunnyArray[counter].visible == false)
+					{
+						numHidden++;
+					}
+				}
+			}
+		});
+
+
+		</script>
+
+	</body>
+</html>
+
+

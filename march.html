@@ -67,7 +67,7 @@
 			{
 
 				bunnyArray = [];
-				stageText.setText("Stage " + stageNum );
+				stageText.text = "Stage " + stageNum;
 
 				for (var counter = 0; counter < stageNum; ++counter)
 				{
@@ -115,7 +115,7 @@
 					this.visible = false;
 					console.log("Dead Bunny");
 					score++;
-					scoreText.setText("YOUR SCORE: " + score );
+					scoreText.text = "YOUR SCORE: " + score;
 
 				};
 
@@ -166,7 +166,7 @@
 					if ((bunnyArray[counter].position.y > (gameHeight/3)*2 +50) && bunnyArray[counter].visible == true)
 					{
 						score--;
-						scoreText.setText("YOUR SCORE: " + score );
+						scoreText.text = "YOUR SCORE: " + score;
 						bunnyArray[counter].visible = false;
 					}
 
